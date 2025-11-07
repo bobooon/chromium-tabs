@@ -1,16 +1,12 @@
-import messagesJson from '../../locales/en/messages.json'
+import type { Settings } from './settings.ts'
+import json from '../../locales/en/messages.json' with { type: 'json' }
+import { defaultSettings } from './settings.ts'
 
-export const defaultSettings: TabulenceSettings = {
-  closeEmpty: false,
-  closeGrouped: true,
-  closePinned: true,
-}
+const messages = json as { [key: string]: { message: string } }
 
-const messages = messagesJson as { [key: string]: { message: string } }
+export function api() {}
 
-export default function chromeApi() {}
-
-chromeApi.getMessage = (key: string, substitutions?: string | string[]): string => {
+api.getMessage = (key: string, substitutions?: string | string[]): string => {
   try {
     return chrome.i18n.getMessage(key, substitutions)
   }
@@ -19,34 +15,36 @@ chromeApi.getMessage = (key: string, substitutions?: string | string[]): string 
   }
 }
 
-chromeApi.getSettings = async () => {
+api.getSettings = async () => {
   try {
-    return await chrome.runtime.sendMessage({ type: 'getSettings' })
+    return await chrome.runtime.sendMessage({ type: 'getSettings' }) as Settings
   }
   catch {
     return structuredClone(defaultSettings)
   }
 }
 
-chromeApi.saveSettings = async (settings: TabulenceSettings) => {
+api.saveSettings = async (settings: Settings) => {
   try {
     await chrome.runtime.sendMessage({ type: 'saveSettings', payload: settings })
   }
   catch {}
 }
 
-chromeApi.getShortcut = async () => {
+api.getCommands = async () => {
   try {
-    return await chrome.runtime.sendMessage({ type: 'getShortcut' })
+    return await chrome.runtime.sendMessage({ type: 'getCommands' }) as chrome.commands.Command[]
   }
   catch {
-    return ''
+    return []
   }
 }
 
-chromeApi.openShortcuts = () => {
+api.createTab = (url: string) => {
   try {
-    chrome.tabs.create({ url: 'chrome://extensions/shortcuts' })
+    chrome.tabs.create({ url })
   }
-  catch {}
+  catch {
+    console.log(url)
+  }
 }

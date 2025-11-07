@@ -1,26 +1,28 @@
-import { defaultSettings } from './api.ts'
+import type { Settings } from './settings.ts'
+import { defaultSettings } from './settings.ts'
 
 async function getSettings() {
-  return (await chrome.storage.local.get(['settings'])).settings || structuredClone(defaultSettings)
+  return (await chrome.storage.local.get(['settings'])).settings as Settings || structuredClone(defaultSettings)
 }
 
-async function saveSettings(settings: TabulenceSettings) {
+async function saveSettings(settings: Settings) {
   await chrome.storage.local.set({ settings })
-}
-
-async function getShortcut() {
-  return (await chrome.commands.getAll())[1].shortcut
 }
 
 chrome.tabs.onCreated.addListener(async (tab) => {
   const settings = await getSettings()
-  if (settings.closeEmpty)
-    return;
+  if (settings.preserveEmpty)
+    return
 
-  (await chrome.tabs.query({ url: 'chrome://newtab/' })).forEach((newTab) => {
-    if (newTab.id && newTab.id !== tab.id)
-      chrome.tabs.remove(newTab.id)
-  })
+  try {
+    await Promise.allSettled(
+      (await chrome.tabs.query({ currentWindow: true, url: 'chrome://newtab/' })).map(async (newTab) => {
+        if (newTab.id && newTab.id !== tab.id)
+          await chrome.tabs.remove(newTab.id)
+      }),
+    )
+  }
+  catch {}
 })
 
 async function closeTab() {
@@ -33,10 +35,9 @@ async function closeTab() {
     return
 
   const settings = await getSettings()
-  if ((settings.closePinned && tab.pinned) || (settings.closeGrouped && tab.groupId !== -1))
+  if ((settings.preservePinned && tab.pinned) || (settings.preserveGrouped && tab.groupId !== -1))
     return
 
-  // Filter the tabs to close based on the enabled protections.
   try {
     const tabs = window.tabs.filter(b => !b.pinned && b.groupId === -1 && b.id !== tab.id)
     if (!tabs.length)
@@ -48,21 +49,21 @@ async function closeTab() {
 
 chrome.runtime.onMessage.addListener((message, _sender, response) => {
   switch (message.type) {
+    case 'getCommands':
+      chrome.commands.getAll().then(commands => response(commands))
+      return true
+
     case 'getSettings':
       getSettings().then(settings => response(settings))
       return true
 
     case 'saveSettings':
       saveSettings(message.payload)
-      break
-
-    case 'getShortcut':
-      getShortcut().then(shortcut => response(shortcut))
-      return true
+      return false
   }
 })
 
-chrome.commands.onCommand.addListener((command: string) => {
+chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'close')
-    closeTab()
+    await closeTab()
 })

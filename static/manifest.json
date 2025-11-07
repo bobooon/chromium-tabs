@@ -24,7 +24,11 @@
   },
   "commands": {
     "close": {
-      "description": "__MSG_closeCommand__"
+      "description": "__MSG_closeCommand__",
+      "suggested_key": {
+        "default": "Ctrl+W",
+        "mac": "Command+W"
+      }
     }
   }
 }

@@ -1,0 +1,3 @@
+.rt-Box > .rt-Separator:where(.rt-r-orientation-horizontal) {
+  height: calc(1px * 0.5);
+}

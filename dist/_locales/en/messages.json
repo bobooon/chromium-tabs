@@ -1,41 +1,47 @@
 {
   "name": {
-    "message": "Tabulence"
+    "message": "Tabs"
   },
   "description": {
-    "message": "Adds awareness of the last tab and provides additional safeguards when closing tabs."
+    "message": "Prevent the window or tab from being closed based on customizable rules."
   },
   "closeCommand": {
-    "message": "Close the current tab"
+    "message": "Close the tab"
   },
-  "closeUnassigned": {
-    "message": "You must assign a keyboard shortcut to use these options."
+  "shortcut": {
+    "message": "Assigned keyboard shortcut"
   },
-  "closeShortcut": {
-    "message": "Assigned Keyboard Shortcut"
+  "shortcutHelp": {
+    "message": "Change the close tab keyboard shortcut."
   },
-  "closeShortcutHelp": {
-    "message": "Assign a keyboard shortcut to close tabs based on the enabled options."
+  "shortcutDisabled": {
+    "message": "Unassigned"
   },
-  "closeConfigure": {
-    "message": "Assign"
+  "preservePinned": {
+    "message": "Preserve pinned tabs"
   },
-  "closePinned": {
-    "message": "Prevent closing pinned tabs"
+  "preservePinnedHelp": {
+    "message": "Prevent pinned tabs from being closed."
   },
-  "closePinnedHelp": {
-    "message": "When enabled, pinned tabs will not be closed when using the keyboard shortcut to close tabs."
+  "preserveGrouped": {
+    "message": "Preserve grouped tabs"
   },
-  "closeGrouped": {
-    "message": "Prevent closing tabs within groups"
+  "preserveGroupedHelp": {
+    "message": "Prevent grouped tabs from being closed."
   },
-  "closeGroupedHelp": {
-    "message": "When enabled, grouped tabs will not be closed when using the keyboard shortcut to close tabs."
+  "preserveEmpty": {
+    "message": "Preserve empty tabs"
   },
-  "closeEmpty": {
-    "message": "Prevent closing empty new tabs"
+  "preserveEmptyHelp": {
+    "message": "Prevent empty tabs from being closed."
   },
-  "closeEmptyHelp": {
-    "message": "When enabled, empty new tabs will not be automatically closed when another tab is created."
+  "advanced": {
+    "message": "Advanced"
+  },
+  "extensionInfo": {
+    "message": "Details"
+  },
+  "extensionShortcuts": {
+    "message": "Keyboard shortcuts"
   }
 }
